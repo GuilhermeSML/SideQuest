@@ -1,12 +1,8 @@
 const express = require('express');
 //const helmet = require('helmet');
-const bodyParser = require('body-parser');
 const { MongoClient } = require('mongodb');
 
 const app = express();
-
-// Middleware to parse URL-encoded data (form data)
-app.use(bodyParser.urlencoded({ extended: true }));
 
 // Connection URL and Database Name
 const uri = process.env.ConnectionString;  // Replace with your MongoDB connection string
