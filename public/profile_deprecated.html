@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page</title>
+    <script>
+        // Fetch the profile data dynamically
+        async function fetchProfile() {
+            try {
+                const response = await fetch('/api/profile');
+                const user = await response.json();
+
+                // Dynamically populate the page with user data
+                document.getElementById('name').textContent = user.name || 'Unknown User';
+                document.getElementById('profession').textContent = user.profession || 'No Profession Specified';
+                document.getElementById('interests').textContent = user.interests || 'No interests specified';
+                document.getElementById('location').textContent = user.location || 'No location specified';
+                document.getElementById('email').textContent = user.email || 'No email available';
+                document.getElementById('email').href = `mailto:${user.email || ''}`;
+            } catch (error) {
+                console.error('Error fetching profile:', error);
+            }
+        }
+
+        // Load profile data when the page loads
+        window.onload = fetchProfile;
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="profile-header">
+            <div>
+                <h1 id="name">Loading...</h1>
+                <p id="profession">Loading...</p>
+            </div>
+        </div>
+
+        <div class="profile-details">
+            <h2>My Interests</h2>
+            <p id="interests">Loading...</p>
+
+            <h2>My Location</h2>
+            <p id="location">Loading...</p>
+
+            <div class="contact-info">
+                <h2>Contact Information</h2>
+                <p>Email: <a id="email" href="#">Loading...</a></p>
+            </div>
+        </div>
+    </div>
+
+    <form action="/api/submit.js" method="POST">
+        <button type="submit">Edit</button>
+    </form>
+</body>
+
+</html>
