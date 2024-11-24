@@ -5,7 +5,23 @@ const { MongoClient } = require('mongodb');
 const app = express();
 
 // Middleware to parse URL-encoded data (form data)
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }),
+    helmet.contentSecurityPolicy({
+        directives: {
+            defaultSrc: ["'self'"], // Allow resources from the same origin
+            scriptSrc: [
+                "'self'",
+                "'unsafe-inline'",
+                "https://vercel.live", // Allow Vercel scripts
+            ],
+            styleSrc: ["'self'", "'unsafe-inline'"], // Allow inline styles
+            imgSrc: ["'self'", "data:", "https://vercel.live"], // Allow images from Vercel
+            connectSrc: ["'self'", "https://vercel.live"], // Allow connections to Vercel live
+            fontSrc: ["'self'", "https://fonts.gstatic.com"], // Allow Google Fonts
+            objectSrc: ["'none'"], // Disallow all plugins (e.g., Flash)
+            upgradeInsecureRequests: [], // Allow mixed content
+        },
+    }));
 
 // Connection URL and Database Name
 const uri = "mongodb://localhost:27017";  // Replace with your MongoDB connection string
