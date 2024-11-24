@@ -24,8 +24,8 @@ app.use(bodyParser.urlencoded({ extended: true }),
     }));
 
 // Connection URL and Database Name
-const uri = "mongodb://localhost:27017";  // Replace with your MongoDB connection string
-const dbName = "myDatabase";  // Replace with your desired database name
+const uri = process.env.ConnectionString;  // Replace with your MongoDB connection string
+const dbName = "SideQuest";  // Replace with your desired database name
 
 // POST route to handle form submission
 app.post('/', async (req, res) => {
