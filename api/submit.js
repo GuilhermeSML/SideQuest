@@ -14,47 +14,53 @@ const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 // POST route to handle form submission
 app.post('/api/submit', async (req, res) => {
-    const { name, email, interests, location } = req.body;
+  const { name, email, interests, location } = req.body;
 
-    // MongoDB Client
-    const client = new MongoClient(uri);
+  // MongoDB Client
+  const client = new MongoClient(uri);
 
-    try {
-        // Connect to the MongoDB server
-        await client.connect();
-        console.log("Connected to MongoDB!");
+  try {
+    // Connect to the MongoDB server
+    await client.connect();
+    console.log("Connected to MongoDB!");
 
-        // Access the database and collection
-        const db = client.db(dbName);
-        const collection = db.collection('users');  // Use your desired collection name
+    // Access the database and collection
+    const db = client.db(dbName);
+    const collection = db.collection('users');  // Use your desired collection name
 
-        // Insert the form data into the 'User' collection
-        const result = await collection.insertOne({
-            name: name,
-            email: email,
-            interests: interests,
-            location: location,
-            submittedAt: new Date()  // Add the current date/time to track submissions
-        });
+    // Insert the form data into the 'User' collection
+    const result = await collection.updateOne(
+      { email: email }, // The filter criteria (find the document by email)
+      {
+        $set: { // Use $set to update fields or create them if they don't exist
+          name: name,
+          email: email,
+          interests: interests,
+          location: location,
+          submittedAt: new Date()
+        }
+      },
+      { upsert: true } // Ensure that if the document doesn't exist, it will be created
+    );
 
-        // Set up question and answer
-        const prompt = "My interests are the following: " + interests + " get me a list of 3 items each to do in " + location;
-        const inputText = await model.generateContent(prompt);
-        
-        // Redirect to a thank-you page after successful form submission
-        res.send('<h2>Side Quest:</h2> <br/> <br/> ' + inputText.response.text().replaceAll('\n','<br/>'));
+    // Set up question and answer
+    const prompt = "My interests are the following: " + interests + " get me a list of 3 items each to do in " + location;
+    const inputText = await model.generateContent(prompt);
 
-    } catch (error) {
-        console.error("An error occurred:", error);
-        res.status(500).send("An error occurred while submitting the form.");
-    } finally {
-        // Close the connection
-        await client.close();
-        console.log("Connection closed.");
-    }
+    // Redirect to a thank-you page after successful form submission
+    res.send('<h2>Side Quest:</h2> <br/> <br/> ' + inputText.response.text().replaceAll('\n', '<br/>'));
+
+  } catch (error) {
+    console.error("An error occurred:", error);
+    res.status(500).send("An error occurred while submitting the form.");
+  } finally {
+    // Close the connection
+    await client.close();
+    console.log("Connection closed.");
+  }
 });
 
 // Export the app as a serverless function
 module.exports = (req, res) => {
-    app(req, res);
+  app(req, res);
 };
