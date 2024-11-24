@@ -1,4 +1,5 @@
 const express = require('express');
+const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const { MongoClient } = require('mongodb');
 
@@ -41,7 +42,7 @@ app.post('/', async (req, res) => {
 
         // Access the database and collection
         const db = client.db(dbName);
-        const collection = db.collection('User');  // Use your desired collection name
+        const collection = db.collection('users');  // Use your desired collection name
 
         // Insert the form data into the 'User' collection
         const result = await collection.insertOne({
