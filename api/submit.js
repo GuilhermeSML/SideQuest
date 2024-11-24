@@ -6,7 +6,7 @@ const { MongoClient } = require('mongodb');
 const app = express();
 
 // Connection URL and Database Name
-const uri = process.env.CONNECTION_STRING;  // Replace with your MongoDB connection string
+const uri = process.env.MONGODB_URI;  // Replace with your MongoDB connection string
 const dbName = "SideQuest";  // Replace with your desired database name
 
 // POST route to handle form submission

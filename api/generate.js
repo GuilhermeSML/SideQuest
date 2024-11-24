@@ -5,7 +5,7 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const app = express();
 
 // Connection URL and Database Name
-const uri = process.env.CONNECTION_STRING;  // Replace with your MongoDB connection string
+const uri = process.env.MONGODB_URI;  // Replace with your MongoDB connection string
 const dbName = "SideQuest";  // Replace with your desired database name
 
 // SetUp Gemini
