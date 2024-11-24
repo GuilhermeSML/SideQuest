@@ -1,35 +1,19 @@
 const express = require('express');
-const helmet = require('helmet');
+//const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const { MongoClient } = require('mongodb');
 
 const app = express();
 
 // Middleware to parse URL-encoded data (form data)
-app.use(bodyParser.urlencoded({ extended: true }),
-    helmet.contentSecurityPolicy({
-        directives: {
-            defaultSrc: ["'self'"], // Allow resources from the same origin
-            scriptSrc: [
-                "'self'",
-                "'unsafe-inline'",
-                "https://vercel.live", // Allow Vercel scripts
-            ],
-            styleSrc: ["'self'", "'unsafe-inline'"], // Allow inline styles
-            imgSrc: ["'self'", "data:", "https://vercel.live"], // Allow images from Vercel
-            connectSrc: ["'self'", "https://vercel.live"], // Allow connections to Vercel live
-            fontSrc: ["'self'", "https://fonts.gstatic.com"], // Allow Google Fonts
-            objectSrc: ["'none'"], // Disallow all plugins (e.g., Flash)
-            upgradeInsecureRequests: [], // Allow mixed content
-        },
-    }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Connection URL and Database Name
 const uri = process.env.ConnectionString;  // Replace with your MongoDB connection string
 const dbName = "SideQuest";  // Replace with your desired database name
 
 // POST route to handle form submission
-app.post('/api/form/submit', async (req, res) => {
+app.post('/api/submit', async (req, res) => {
     const { name, email, interests, location } = req.body;
 
     // MongoDB Client
@@ -54,7 +38,7 @@ app.post('/api/form/submit', async (req, res) => {
         });
 
         // Redirect to a thank-you page after successful form submission
-        res.redirect('/thank-you');
+        res.send('Thank you for submitting the form!');
 
     } catch (error) {
         console.error("An error occurred:", error);
@@ -65,12 +49,6 @@ app.post('/api/form/submit', async (req, res) => {
         console.log("Connection closed.");
     }
 });
-
-// Thank-you page
-app.get('/thank-you', (req, res) => {
-    res.send('Thank you for submitting the form!');
-});
-
 
 // Export the app as a serverless function
 module.exports = (req, res) => {
