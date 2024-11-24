@@ -5,10 +5,6 @@ const { MongoClient } = require('mongodb');
 
 const app = express();
 
-// Middleware to parse the request body
-app.use(bodyParser.json());  // For JSON payloads
-app.use(bodyParser.urlencoded({ extended: true }));  // For form data
-
 // Connection URL and Database Name
 const uri = process.env.CONNECTION_STRING;  // Replace with your MongoDB connection string
 const dbName = "SideQuest";  // Replace with your desired database name
@@ -47,7 +43,7 @@ app.post('/api/submit', async (req, res) => {
       { upsert: true } // Ensure that if the document doesn't exist, it will be created
     );
 
-    res.redirect('/profile');
+    res.redirect('/api/profile');
 
   } catch (error) {
     console.error("An error occurred:", error);

@@ -12,7 +12,7 @@ const dbName = "SideQuest";  // Replace with your desired database name
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-app.post('/api/sidequests', async (req, res) => {
+app.post('/api/generate', async (req, res) => {
     const {email} = req.body;
 
     // MongoDB Client
