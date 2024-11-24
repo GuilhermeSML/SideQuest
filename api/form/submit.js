@@ -29,7 +29,7 @@ const uri = process.env.ConnectionString;  // Replace with your MongoDB connecti
 const dbName = "SideQuest";  // Replace with your desired database name
 
 // POST route to handle form submission
-app.post('/', async (req, res) => {
+app.post('/api/form/submit', async (req, res) => {
     const { name, email, interests, location } = req.body;
 
     // MongoDB Client
@@ -53,13 +53,9 @@ app.post('/', async (req, res) => {
             submittedAt: new Date()  // Add the current date/time to track submissions
         });
 
-        // Respond with a success message
-        res.send(`
-            <h1>Thank You, ${name}!</h1>
-            <p>Your email (${email}) has been submitted successfully!</p>
-            <p>Form data stored in MongoDB!</p>
-            <a href="/">Go back to the form</a>
-        `);
+        // Redirect to a thank-you page after successful form submission
+        res.redirect('/thank-you');
+
     } catch (error) {
         console.error("An error occurred:", error);
         res.status(500).send("An error occurred while submitting the form.");
@@ -69,6 +65,12 @@ app.post('/', async (req, res) => {
         console.log("Connection closed.");
     }
 });
+
+// Thank-you page
+app.get('/thank-you', (req, res) => {
+    res.send('Thank you for submitting the form!');
+});
+
 
 // Export the app as a serverless function
 module.exports = (req, res) => {
