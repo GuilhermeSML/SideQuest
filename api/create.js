@@ -42,7 +42,7 @@ app.post('/api/create', async (req, res) => {
       { upsert: true } // Ensure that if the document doesn't exist, it will be created
     );
 
-    res.redirect('/');
+    res.redirect('../');
 
   } catch (error) {
     console.error("An error occurred:", error);
