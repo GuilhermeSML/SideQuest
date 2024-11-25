@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quest Accepted</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100">
+    <div class="bg-white p-8 rounded-lg shadow-lg max-w-2xl mx-auto my-6">
+        <h1 class="text-2xl font-bold text-center text-gray-700 mb-4">Quest Accepted!</h1>
+        <p class="text-lg text-center text-gray-600 mb-6">
+            You have successfully accepted the quest:
+        </p>
+        <h2 class="text-xl font-semibold text-center text-blue-500 mb-8">
+            "<%= questTitle %>"
+        </h2>
+        <div class="flex justify-center">
+            <a href="../" 
+               class="bg-blue-500 text-white py-2 px-4 rounded-md shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                Back to Home
+            </a>
+        </div>
+    </div>
+</body>
+
+</html>

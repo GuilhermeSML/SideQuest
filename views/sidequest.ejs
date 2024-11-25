@@ -32,10 +32,16 @@
 
 
                     <!-- Accept Button Section -->
-                    <div class="mt-6 flex justify-center">
-                        <a href="../"
-                            class="bg-blue-500 text-white py-2 px-4 rounded-md shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">Accept</a>
-                    </div>
+                    <form action="/api/acceptquest" method="POST" class="space-y-6">
+                        <!-- Using EJS-rendered values -->
+                        <input type="hidden" name="email" value="<%= email %>">
+                        <input type="hidden" name="name" value="<%= data.Name %>">
+                        <input type="hidden" name="description" value="<%= data.Description %>">
+                        <div class="flex justify-between items-center space-x-4">
+                            <button type="submit" name="action"
+                                class="bg-blue-500 text-white py-2 px-4 rounded-md shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">Accept</button>
+                        </div>
+                    </form>
                     <!-- Back Button Section -->
                     <div class="mt-6 flex justify-center">
                         <a href="../"

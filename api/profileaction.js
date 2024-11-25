@@ -46,71 +46,107 @@ app.post('/api/profileaction', async (req, res) => {
     // MongoDB Client
     const client = new MongoClient(uri);
 
-    if (action === 'generate') {
-        try {
+    switch (action) {
+        case "generate":
+            try {
 
-            // Set up question and answer
-            const prompt = "My interests are the following: " + interests + "Get me one random task in " + location + "this JSON schema:" + jsonStructure;
+                // Set up question and answer
+                const prompt = "My interests are the following: " + interests + "Get me one random task in " + location + "this JSON schema:" + jsonStructure;
 
-            const inputText = await model.generateContent(prompt);
-            const cleanJson = JSON.parse(inputText.response.text().replaceAll("```", "").replace("json", ""));
+                const inputText = await model.generateContent(prompt);
+                const cleanJson = JSON.parse(inputText.response.text().replaceAll("```", "").replace("json", ""));
 
-            console.log(JSON.stringify(cleanJson));
+                console.log(JSON.stringify(cleanJson));
 
-            // Path to the EJS template
-            const templatePath = path.join(__dirname, '..', 'views', 'sidequest.ejs');
-            console.log('Template Path:', templatePath);
+                // Path to the EJS template
+                const templatePath = path.join(__dirname, '..', 'views', 'sidequest.ejs');
+                console.log('Template Path:', templatePath);
 
-            // Render the EJS template with dynamic data
-            ejs.renderFile(templatePath, { data: cleanJson }, (err, html) => {
-                if (err) {
-                    console.error('Error rendering EJS template:', err);
-                    res.status(500).send('Internal Server Error');
-                    return;
-                }
-                res.setHeader('Content-Type', 'text/html');
-                res.send(html);
-            });
+                // Render the EJS template with dynamic data
+                ejs.renderFile(templatePath, { data: cleanJson, email: email }, (err, html) => {
+                    if (err) {
+                        console.error('Error rendering EJS template:', err);
+                        res.status(500).send('Internal Server Error');
+                        return;
+                    }
+                    res.setHeader('Content-Type', 'text/html');
+                    res.send(html);
+                });
 
-        } catch (error) {
-            console.error("An error occurred:", error);
-            res.status(500).send("An error occurred while submitting the form.");
-        }
-    } else if (action === 'edit') {
+            } catch (error) {
+                console.error("An error occurred:", error);
+                res.status(500).send("An error occurred while submitting the form.");
+            }
+            break;
+        case "edit":
 
-        try {
-            // Connect to the MongoDB server
-            await client.connect();
-            console.log("Connected to MongoDB!");
+            try {
+                // Connect to the MongoDB server
+                await client.connect();
+                console.log("Connected to MongoDB!");
 
-            // Access the database and collection
-            const db = client.db(dbName);
-            const collection = db.collection('users');  // Use your desired collection name
-            // Fetch the user by email
-            const user = await collection.findOne({ email: email });
+                // Access the database and collection
+                const db = client.db(dbName);
+                const collection = db.collection('users');  // Use your desired collection name
+                // Fetch the user by email
+                const user = await collection.findOne({ email: email });
 
-            // Path to the EJS template
-            const templatePath = path.join(__dirname, '..', 'views', 'edit.ejs');
-            console.log('Template Path:', templatePath);
+                // Path to the EJS template
+                const templatePath = path.join(__dirname, '..', 'views', 'edit.ejs');
+                console.log('Template Path:', templatePath);
 
-            // Render the EJS template with dynamic data
-            ejs.renderFile(templatePath, user, (err, html) => {
-                if (err) {
-                    console.error('Error rendering EJS template:', err);
-                    res.status(500).send('Internal Server Error');
-                    return;
-                }
-                res.setHeader('Content-Type', 'text/html');
-                res.send(html);
-            });
-        } catch (err) {
-            console.error("Error fetching user data:", err);
-            res.status(500).send("Failed to fetch user data.");
-        } finally {
-            // Close the connection
-            await client.close();
-            console.log("Connection closed.");
-        }
+                // Render the EJS template with dynamic data
+                ejs.renderFile(templatePath, user, (err, html) => {
+                    if (err) {
+                        console.error('Error rendering EJS template:', err);
+                        res.status(500).send('Internal Server Error');
+                        return;
+                    }
+                    res.setHeader('Content-Type', 'text/html');
+                    res.send(html);
+                });
+            } catch (err) {
+                console.error("Error fetching user data:", err);
+                res.status(500).send("Failed to fetch user data.");
+            } finally {
+                // Close the connection
+                await client.close();
+                console.log("Connection closed.");
+            }
+            break;
+        case "viewquests":
+            try {
+                // Connect to the MongoDB server
+                await client.connect();
+                console.log("Connected to MongoDB!");
+
+                // Access the database and collection
+                const db = client.db(dbName);
+                const collection = db.collection('userquest');  // Use your desired collection name
+                // Fetch the user by email
+                const userquests = await collection.find({ email: email }).toArray();
+
+                console.log(userquests);
+
+                // Path to the EJS template
+                const templatePath = path.join(__dirname, '..', 'views', 'viewquests.ejs');
+                console.log('Template Path:', templatePath);
+
+                // Render the EJS template with dynamic data
+                ejs.renderFile(templatePath, {quests : userquests}, (err, html) => {
+                    if (err) {
+                        console.error('Error rendering EJS template:', err);
+                        res.status(500).send('Internal Server Error');
+                        return;
+                    }
+                    res.setHeader('Content-Type', 'text/html');
+                    res.send(html);
+                });
+            } catch (err) {
+                console.error("Error fetching user data:", err);
+                res.status(500).send("Failed to fetch user data.");
+            }
+            break;
     }
 });
 
