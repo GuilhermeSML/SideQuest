@@ -13,7 +13,7 @@ const dbName = "SideQuest";  // Replace with your desired database name
 
 // SetUp Gemini
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
 
 const jsonStructure = `{
   "$schema": "http://json-schema.org/draft-07/schema#",
@@ -37,6 +37,17 @@ const jsonStructure = `{
   ]
 }`
 
+const model = genAI.getGenerativeModel({
+    model: "gemini-1.5-flash",
+    systemInstruction: `
+    Return only a JSON that follows the schema ${jsonStructure}.
+    You are a task giver.
+    Generate a random task based in given interests and locations.
+    Ground your tasks in reality but be specific.
+    End the description text with the coordinates to the starting point. 
+    `,
+});
+
 app.post('/api/profileaction', async (req, res) => {
     if (!req.body) {
         return res.status(400).send('Request body is missing');
@@ -51,11 +62,11 @@ app.post('/api/profileaction', async (req, res) => {
             try {
 
                 // Set up question and answer
-                const prompt = "My interests are the following: " + interests + "Get me one random task in " + location + "this JSON schema:" + jsonStructure;
+                const prompt = `Interests: ${interests} Locations: ${location}`;
 
                 const inputText = await model.generateContent(prompt);
+                console.log(inputText.response.text());
                 const cleanJson = JSON.parse(inputText.response.text().replaceAll("```", "").replace("json", ""));
-
                 console.log(JSON.stringify(cleanJson));
 
                 // Path to the EJS template
@@ -133,7 +144,7 @@ app.post('/api/profileaction', async (req, res) => {
                 console.log('Template Path:', templatePath);
 
                 // Render the EJS template with dynamic data
-                ejs.renderFile(templatePath, {quests : userquests}, (err, html) => {
+                ejs.renderFile(templatePath, { quests: userquests }, (err, html) => {
                     if (err) {
                         console.error('Error rendering EJS template:', err);
                         res.status(500).send('Internal Server Error');
