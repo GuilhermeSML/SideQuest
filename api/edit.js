@@ -1,101 +1,61 @@
 const express = require('express');
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-
-const ejs = require('ejs');
-const path = require('path');
+const bodyParser = require('body-parser');
+const { MongoClient } = require('mongodb');
 
 const app = express();
 
-// SetUp Gemini
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+// Connection URL and Database Name
+const uri = process.env.MONGODB_URI;  // Replace with your MongoDB connection string
+const dbName = "SideQuest";  // Replace with your desired database name
 
-const jsonStructure = `{
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Generated schema for Root",
-  "type": "object",
-  "properties": {
-    "Interests": {
-      "type": "string"
-    },
-    "Name": {
-      "type": "string"
-    },
-    "Description": {
-      "type": "string"
-    }
-  },
-  "required": [
-    "Interests",
-    "Name",
-    "Description"
-  ]
-}`
-
+// POST route to handle form submission
 app.post('/api/edit', async (req, res) => {
-    if (!req.body) {
-        return res.status(400).send('Request body is missing');
-    }
-    const { name, email, interests, location, action } = req.body;
+  if (!req.body) {
+    return res.status(400).send('Request body is missing');
+  }
+  const { name, email, interests, location, password } = req.body;
 
-    if (action === 'generate') {
-        try {
+  // MongoDB Client
+  const client = new MongoClient(uri);
 
-            // Set up question and answer
-            //const prompt = "My interests are the following: " + interests + " get me a list of 1 items each to do in " + location;
-            const prompt = "My interests are the following: " + interests + "Get me one random task in " + location + "this JSON schema:" + jsonStructure;
+  try {
+    // Connect to the MongoDB server
+    await client.connect();
+    console.log("Connected to MongoDB!");
 
-            const inputText = await model.generateContent(prompt);
-            const cleanJson = JSON.parse(inputText.response.text().replaceAll("```", "").replace("json", ""));
+    // Access the database and collection
+    const db = client.db(dbName);
+    const collection = db.collection('users');  // Use your desired collection name
 
-            console.log(JSON.stringify(cleanJson));
-
-            // Path to the EJS template
-            const templatePath = path.join(__dirname, '..', 'views', 'sidequest.ejs');
-            console.log('Template Path:', templatePath);
-
-            // Render the EJS template with dynamic data
-            ejs.renderFile(templatePath, { data: cleanJson}, (err, html) => {
-                if (err) {
-                    console.error('Error rendering EJS template:', err);
-                    res.status(500).send('Internal Server Error');
-                    return;
-                }
-                res.setHeader('Content-Type', 'text/html');
-                res.send(html);
-            });
-
-        } catch (error) {
-            console.error("An error occurred:", error);
-            res.status(500).send("An error occurred while submitting the form.");
+    // Insert the form data into the 'User' collection
+    const result = await collection.updateOne(
+      { email: email}, // The filter criteria (find the document by email)
+      {
+        $set: { // Use $set to update fields or create them if they don't exist
+          name: name,
+          email: email,
+          interests: interests,
+          password: password,
+          location: location,
+          submittedAt: new Date()
         }
-    } else if (action === 'edit') {
+      },
+      { upsert: true } // Ensure that if the document doesn't exist, it will be created
+    );
 
-        try {
-            console.log('Email from req.body:', req.body.email);
+    res.redirect('/api/profile');
 
-            // Path to the EJS template
-            const templatePath = path.join(__dirname, '..', 'views', 'edit.ejs');
-            console.log('Template Path:', templatePath);
-
-            // Render the EJS template with dynamic data
-            ejs.renderFile(templatePath, req.body, (err, html) => {
-                if (err) {
-                    console.error('Error rendering EJS template:', err);
-                    res.status(500).send('Internal Server Error');
-                    return;
-                }
-                res.setHeader('Content-Type', 'text/html');
-                res.send(html);
-            });
-        } catch (err) {
-            console.error("Error fetching user data:", err);
-            res.status(500).send("Failed to fetch user data.");
-        }
-    }
+  } catch (error) {
+    console.error("An error occurred:", error);
+    res.status(500).send("An error occurred while submitting the form.");
+  } finally {
+    // Close the connection
+    await client.close();
+    console.log("Connection closed.");
+  }
 });
 
 // Export the app as a serverless function
 module.exports = (req, res) => {
-    app(req, res);
+  app(req, res);
 };

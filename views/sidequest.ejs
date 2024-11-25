@@ -16,18 +16,31 @@
         <% if (data) { %>
             <div class="activity mb-6">
                 <!-- Display the Interest, Name, and Description -->
-                <h3 class="text-xl font-semibold text-gray-800"><%= data.Interests %></h3>
-                <h4 class="text-lg font-medium text-blue-600 mt-2"><%= data.Name %></h4>
-                <p class="text-gray-600 mt-2"><%= data.Description %></p>
+                <h3 class="text-xl font-semibold text-gray-800">
+                    <%= data.Interests %>
+                </h3>
+                <h4 class="text-lg font-medium text-blue-600 mt-2">
+                    <%= data.Name %>
+                </h4>
+                <p class="text-gray-600 mt-2">
+                    <%= data.Description %>
+                </p>
             </div>
-        <% } else { %>
-            <p class="text-gray-600">No activity available at the moment.</p>
-        <% } %>
+            <% } else { %>
+                <p class="text-gray-600">No activity available at the moment.</p>
+                <% } %>
 
-        <!-- Back Button Section -->
-        <div class="mt-6 flex justify-center">
-            <a href="../" class="bg-blue-500 text-white py-2 px-4 rounded-md shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">Back</a>
-        </div>
+
+                    <!-- Accept Button Section -->
+                    <div class="mt-6 flex justify-center">
+                        <a href="../"
+                            class="bg-blue-500 text-white py-2 px-4 rounded-md shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">Accept</a>
+                    </div>
+                    <!-- Back Button Section -->
+                    <div class="mt-6 flex justify-center">
+                        <a href="../"
+                            class="bg-blue-500 text-white py-2 px-4 rounded-md shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">Back</a>
+                    </div>
     </div>
 </body>
 
