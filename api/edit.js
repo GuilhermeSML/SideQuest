@@ -10,6 +10,42 @@ const app = express();
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
+const jsonStructure = `{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Generated schema for Root",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "Category": {
+        "type": "string"
+      },
+      "Items": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "Name": {
+              "type": "string"
+            },
+            "Description": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Name",
+            "Description"
+          ]
+        }
+      }
+    },
+    "required": [
+      "Category",
+      "Items"
+    ]
+  }
+}`
+
 app.post('/api/edit', async (req, res) => {
     if (!req.body) {
         return res.status(400).send('Request body is missing');
@@ -20,16 +56,24 @@ app.post('/api/edit', async (req, res) => {
         try {
 
             // Set up question and answer
-            const prompt = "My interests are the following: " + interests + " get me a list of 3 items each to do in " + location;
+            //const prompt = "My interests are the following: " + interests + " get me a list of 3 items each to do in " + location;
+
+            const prompt = "My interests are the following: " + interests + " get me a list of 3 items each to do in " + location + "this JSON schema:" + jsonStructure;
+
+
             const inputText = await model.generateContent(prompt);
-            const sideQuestText = inputText.response.text().replaceAll('\n', '<br/>');
+            const sideQuestText = "Here are some generated side quests based on your location and interesses";
+
+            const cleanJson = JSON.parse(inputText.response.text().replaceAll("```","").replace("json",""));
+
+            console.log(JSON.stringify(cleanJson));
 
             // Path to the EJS template
             const templatePath = path.join(__dirname, '..', 'views', 'sidequest.ejs');
             console.log('Template Path:', templatePath);
-            
+
             // Render the EJS template with dynamic data
-            ejs.renderFile(templatePath, { sideQuestText: sideQuestText } , (err, html) => {
+            ejs.renderFile(templatePath, { data: cleanJson, sideQuestText: sideQuestText }, (err, html) => {
                 if (err) {
                     console.error('Error rendering EJS template:', err);
                     res.status(500).send('Internal Server Error');
