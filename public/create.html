@@ -1,22 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
-<body>
-    <h1>Submit Your Information</h1>
-    <form action="/api/create" method="POST">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required><br><br>
-        
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required><br><br>
-
-        <label for="interests">Interests:</label>
-        <input type="text" id="interests" name="interests" required><br><br>
-
-        <label for="interests">Location:</label>
-        <input type="text" id="location" name="location" required><br><br>
-        
-        <button type="submit">Save</button>
-    </form>
-    <a href="index.html">Back</a>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 flex justify-center items-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
+        <h1 class="text-2xl font-bold text-center mb-6 text-gray-700">Create Account</h1>
+        <form action="/api/create" method="POST" class="space-y-4">
+            <div>
+                <label for="name" class="block text-sm font-medium text-gray-600">Name:</label>
+                <input type="text" id="name" name="name" required 
+                    class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-600">Email:</label>
+                <input type="email" id="email" name="email" required 
+                    class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-600">Password (Not encrypted):</label>
+                <input type="password" id="password" name="password" required 
+                    class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div>
+                <label for="interests" class="block text-sm font-medium text-gray-600">Interests:</label>
+                <input type="text" id="interests" name="interests" required 
+                    class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div>
+                <label for="location" class="block text-sm font-medium text-gray-600">Location:</label>
+                <input type="text" id="location" name="location" required 
+                    class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <button type="submit" 
+                class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">Save</button>
+        </form>
+        <p class="mt-4 text-center">
+            <a href="index.html" class="text-blue-500 hover:underline">Back</a>
+        </p>
+    </div>
 </body>
 </html>

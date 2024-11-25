@@ -13,7 +13,7 @@ app.post('/api/create', async (req, res) => {
   if (!req.body) {
     return res.status(400).send('Request body is missing');
   }
-  const { name, email, interests, location } = req.body;
+  const { name, email, interests, location, password } = req.body;
 
   // MongoDB Client
   const client = new MongoClient(uri);
@@ -34,6 +34,7 @@ app.post('/api/create', async (req, res) => {
         $set: { // Use $set to update fields or create them if they don't exist
           name: name,
           email: email,
+          password: password,
           interests: interests,
           location: location,
           submittedAt: new Date()

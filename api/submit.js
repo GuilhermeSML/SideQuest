@@ -14,7 +14,7 @@ app.post('/api/submit', async (req, res) => {
   if (!req.body) {
     return res.status(400).send('Request body is missing');
   }
-  const { name, email, interests, location } = req.body;
+  const { name, email, interests, location, password } = req.body;
 
   // MongoDB Client
   const client = new MongoClient(uri);
@@ -30,12 +30,13 @@ app.post('/api/submit', async (req, res) => {
 
     // Insert the form data into the 'User' collection
     const result = await collection.updateOne(
-      { email: email }, // The filter criteria (find the document by email)
+      { email: email}, // The filter criteria (find the document by email)
       {
         $set: { // Use $set to update fields or create them if they don't exist
           name: name,
           email: email,
           interests: interests,
+          password: password,
           location: location,
           submittedAt: new Date()
         }

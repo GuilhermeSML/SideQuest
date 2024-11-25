@@ -11,7 +11,7 @@ const app = express();
 
 app.post('/api/profile', async (req, res) => {
     const client = new MongoClient(uri);
-    const { email } = req.body;
+    const { email, password } = req.body;
 
     try {
         // Connect to MongoDB
@@ -22,7 +22,7 @@ app.post('/api/profile', async (req, res) => {
         console.log('Email from req.body:', req.body.email);
 
         // Fetch the user by email
-        const user = await collection.findOne({ email: email });
+        const user = await collection.findOne({ email: email, password: password });
 
         if (!user) {
             res.status(404).send('User not found');

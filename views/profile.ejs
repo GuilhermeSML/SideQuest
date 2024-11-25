@@ -1,36 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 flex justify-center items-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full">
+        <form action="/api/edit" method="POST" class="space-y-6">
+            <div class="space-y-4">
+                <div>
+                    <h2 class="text-xl font-semibold text-gray-700">My Name</h2>
+                    <input type="text" id="name" name="name" value="<%= name %>" readonly 
+                        class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-100 cursor-not-allowed">
+                </div>
 
-<body>
-    <div class="container">
-        <form action="/api/edit" method="POST">
+                <div>
+                    <h2 class="text-xl font-semibold text-gray-700">My Interests</h2>
+                    <input type="text" id="interests" name="interests" value="<%= interests %>" required 
+                        class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
 
-            <div class="profile-details">
-                <h2>My Name</h2>
-                <p id="interests">
-                    <input type="text" id="name" name="name" value="<%= name %>" readonly><br><br>
-                </p>
-                <h2>My Interests</h2>
-                <p id="interests">
-                    <input type="text" id="interests" name="interests" value="<%= interests %>" required><br><br>
-                </p>
+                <div>
+                    <h2 class="text-xl font-semibold text-gray-700">My Location</h2>
+                    <input type="text" id="location" name="location" value="<%= location %>" required 
+                        class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
 
-                <h2>My Location</h2>
-                <p id="location">
-                    <input type="text" id="location" name="location" value="<%= location %>" required><br><br>
-                </p>
-
-                <div class="contact-info">
-                    <h2>Contact Information</h2>
-                    <p>Email: <a id="email" href="#">
-                            <input type="email" id="email" name="email" value="<%= email %>" required><br><br>
-                        </a></p>
+                <div>
+                    <h2 class="text-xl font-semibold text-gray-700">Contact Information</h2>
+                    <input type="email" id="email" name="email" value="<%= email %>" required 
+                        class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
             </div>
-            <button type="submit" name="action" value="edit">Edit</button>
-            <button type="submit" name="action" value="generate">Generate Side Quest</button>
+
+            <div class="flex justify-between items-center space-x-4">
+                <button type="submit" name="action" value="edit" 
+                    class="bg-blue-500 text-white py-2 px-4 rounded-md shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">Edit</button>
+                <button type="submit" name="action" value="generate" 
+                    class="bg-green-500 text-white py-2 px-4 rounded-md shadow hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">Generate Side Quest</button>
+            </div>
         </form>
     </div>
 </body>
-
 </html>
