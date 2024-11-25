@@ -22,9 +22,22 @@ app.post('/api/edit', async (req, res) => {
             // Set up question and answer
             const prompt = "My interests are the following: " + interests + " get me a list of 3 items each to do in " + location;
             const inputText = await model.generateContent(prompt);
+            const sideQuestText = inputText.response.text().replaceAll('\n', '<br/>');
 
-            // Redirect to a thank-you page after successful form submission
-            res.send('<h2>Side Quest:</h2> <br/> ' + inputText.response.text().replaceAll('\n', '<br/>'));
+            // Path to the EJS template
+            const templatePath = path.join(__dirname, '..', 'views', 'sidequest.ejs');
+            console.log('Template Path:', templatePath);
+            
+            // Render the EJS template with dynamic data
+            ejs.renderFile(templatePath, { sideQuestText: sideQuestText } , (err, html) => {
+                if (err) {
+                    console.error('Error rendering EJS template:', err);
+                    res.status(500).send('Internal Server Error');
+                    return;
+                }
+                res.setHeader('Content-Type', 'text/html');
+                res.send(html);
+            });
 
         } catch (error) {
             console.error("An error occurred:", error);
