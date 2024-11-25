@@ -13,37 +13,23 @@ const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 const jsonStructure = `{
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Generated schema for Root",
-  "type": "array",
-  "items": {
-    "type": "object",
-    "properties": {
-      "Category": {
-        "type": "string"
-      },
-      "Items": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "Name": {
-              "type": "string"
-            },
-            "Description": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "Name",
-            "Description"
-          ]
-        }
-      }
+  "type": "object",
+  "properties": {
+    "Interests": {
+      "type": "string"
     },
-    "required": [
-      "Category",
-      "Items"
-    ]
-  }
+    "Name": {
+      "type": "string"
+    },
+    "Description": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "Interests",
+    "Name",
+    "Description"
+  ]
 }`
 
 app.post('/api/edit', async (req, res) => {
@@ -56,15 +42,11 @@ app.post('/api/edit', async (req, res) => {
         try {
 
             // Set up question and answer
-            //const prompt = "My interests are the following: " + interests + " get me a list of 3 items each to do in " + location;
-
-            const prompt = "My interests are the following: " + interests + " get me a list of 3 items each to do in " + location + "this JSON schema:" + jsonStructure;
-
+            //const prompt = "My interests are the following: " + interests + " get me a list of 1 items each to do in " + location;
+            const prompt = "My interests are the following: " + interests + "Get me one random task in " + location + "this JSON schema:" + jsonStructure;
 
             const inputText = await model.generateContent(prompt);
-            const sideQuestText = "Here are some generated side quests based on your location and interesses";
-
-            const cleanJson = JSON.parse(inputText.response.text().replaceAll("```","").replace("json",""));
+            const cleanJson = JSON.parse(inputText.response.text().replaceAll("```", "").replace("json", ""));
 
             console.log(JSON.stringify(cleanJson));
 
@@ -73,7 +55,7 @@ app.post('/api/edit', async (req, res) => {
             console.log('Template Path:', templatePath);
 
             // Render the EJS template with dynamic data
-            ejs.renderFile(templatePath, { data: cleanJson, sideQuestText: sideQuestText }, (err, html) => {
+            ejs.renderFile(templatePath, { data: cleanJson}, (err, html) => {
                 if (err) {
                     console.error('Error rendering EJS template:', err);
                     res.status(500).send('Internal Server Error');
