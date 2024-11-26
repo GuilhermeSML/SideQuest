@@ -27,24 +27,34 @@ app.post('/api/create', async (req, res) => {
     const db = client.db(dbName);
     const collection = db.collection('users');  // Use your desired collection name
 
-    // Insert the form data into the 'User' collection
-    const result = await collection.updateOne(
-      { email: email }, // The filter criteria (find the document by email)
-      {
-        $set: { // Use $set to update fields or create them if they don't exist
-          name: name,
-          email: email,
-          password: password,
-          interests: interests,
-          location: location,
-          difficulty: difficulty,
-          submittedAt: new Date()
-        }
-      },
-      { upsert: true } // Ensure that if the document doesn't exist, it will be created
-    );
+    // Check if the email already exists in the database
+    const existingUser = await collection.findOne({ email: email });
 
-    res.redirect(301,"/");
+    if (existingUser) {
+      // If email exists, send a push notification or a message indicating the error
+      return res.status(400).json({
+        message: 'Email already exists',
+        success: false
+      });
+    }
+
+    // If email doesn't exist, insert the form data into the 'User' collection
+    const result = await collection.insertOne({
+      name: name,
+      email: email,
+      password: password,
+      interests: interests,
+      location: location,
+      difficulty: difficulty,
+      submittedAt: new Date()
+    });
+
+    // If successful, redirect to home page or other destination
+    
+    return res.status(200).json({
+      message: 'Account created',
+      success: true
+    });
 
   } catch (error) {
     console.error("An error occurred:", error);

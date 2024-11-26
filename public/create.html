@@ -5,11 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SideQuesting ...</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .toast {
+            visibility: hidden;
+            min-width: 250px;
+            margin-left: -125px;
+            background-color: #f44336; /* Red */
+            color: white;
+            text-align: center;
+            border-radius: 2px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1;
+            left: 50%;
+            bottom: 30px;
+            font-size: 17px;
+        }
+
+        .toast.show {
+            visibility: visible;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+        @keyframes fadein {
+            from {
+                bottom: 0;
+                opacity: 0;
+            }
+            to {
+                bottom: 30px;
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeout {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+    </style>
 </head>
 <body class="bg-gray-100 flex justify-center items-center min-h-screen">
     <div class="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
         <h1 class="text-2xl font-bold text-center mb-6 text-gray-700">Create Account</h1>
-        <form action="/api/create" method="POST" class="space-y-4">
+        <form id="signupForm" class="space-y-4">
             <div>
                 <label for="name" class="block text-sm font-medium text-gray-600">Name:</label>
                 <input type="text" id="name" name="name" required 
@@ -48,6 +90,9 @@
         </p>
     </div>
 
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
     <!-- Buy Me a Coffee button at the bottom right -->
     <footer class="absolute bottom-4 right-4">
         <a href="https://buymeacoffee.com/guilhermeloureiro" target="_blank">
@@ -58,5 +103,60 @@
             />
         </a>
     </footer>
+
+    <script>
+        // Function to show the toast notification
+        function showToast(message, success=true) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+
+            // Change color based on success or error
+            toast.style.backgroundColor = success ? '#4CAF50' : '#f44336';  // Green for success, Red for error
+            toast.className = 'toast show';
+
+            // Hide the toast after 3 seconds
+            setTimeout(function() {
+                toast.className = toast.className.replace('show', '');
+            }, 3000);
+        }
+
+        // Form submission logic
+        document.getElementById('signupForm').addEventListener('submit', async function(event) {
+            event.preventDefault();  // Prevent form submission
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const interests = document.getElementById('interests').value;
+            const location = document.getElementById('location').value;
+            const difficulty = document.getElementById('difficulty').value;
+
+            const formData = { name, email, password, interests, location, difficulty };
+
+            try {
+                const response = await fetch('/api/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // If successful, redirect to the home page
+                    window.location.href = "/";  // Replace with the desired URL if different
+                } else {
+                    // If there's a 400 error (e.g., email already exists), show the error message
+                    showToast(result.message || 'An error occurred. Please try again.', false);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                // Handle unexpected errors
+                showToast('An unexpected error occurred. Please try again later.', false);
+            }
+        });
+    </script>
 </body>
 </html>
