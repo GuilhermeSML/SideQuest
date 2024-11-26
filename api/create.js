@@ -13,7 +13,7 @@ app.post('/api/create', async (req, res) => {
   if (!req.body) {
     return res.status(400).send('Request body is missing');
   }
-  const { name, email, interests, location, password } = req.body;
+  const { name, email, interests, location, password, difficulty } = req.body;
 
   // MongoDB Client
   const client = new MongoClient(uri);
@@ -37,6 +37,7 @@ app.post('/api/create', async (req, res) => {
           password: password,
           interests: interests,
           location: location,
+          difficulty: difficulty,
           submittedAt: new Date()
         }
       },

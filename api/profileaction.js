@@ -29,6 +29,9 @@ const jsonStructure = `{
     "Description": {
       "type": "string"
     }
+    "Dificulty": {
+      "type": "string"
+    }
     "GoogleMapsIframe": {
       "type": "string"
     }
@@ -37,6 +40,7 @@ const jsonStructure = `{
     "Interests",
     "Name",
     "Description",
+    "Dificulty",
     "GoogleMapsIframe"
   ]
 }`
@@ -46,10 +50,10 @@ const model = genAI.getGenerativeModel({
     systemInstruction: `
     Return only a JSON that follows the schema ${jsonStructure}.
     You are a task giver.
-    Generate a random task based in given interests and locations.
-    Ground your tasks in reality but be specific.
+    Generate an unique task based in given interests, locations and dificulty.
+    Ground your tasks in reality and be specific.
     End the description text with the coordinates to the starting point.
-    GoogleMapsIframe is to be populated with the share embed html for the starting point and put a pin on it. 
+    GoogleMapsIframe is to be populated with the share embed html for the starting point. 
     `,
 });
 
@@ -67,7 +71,7 @@ app.post('/api/profileaction', async (req, res) => {
             try {
 
                 // Set up question and answer
-                const prompt = `Interests: ${interests} Locations: ${location}`;
+                const prompt = `Interests: ${interests}, Locations: ${location}, Difficulty: High`;
 
                 const inputText = await model.generateContent(prompt);
                 console.log(inputText.response.text());
