@@ -29,11 +29,15 @@ const jsonStructure = `{
     "Description": {
       "type": "string"
     }
+    "GoogleMapsIframe": {
+      "type": "string"
+    }
   },
   "required": [
     "Interests",
     "Name",
-    "Description"
+    "Description",
+    "GoogleMapsIframe"
   ]
 }`
 
@@ -44,7 +48,8 @@ const model = genAI.getGenerativeModel({
     You are a task giver.
     Generate a random task based in given interests and locations.
     Ground your tasks in reality but be specific.
-    End the description text with the coordinates to the starting point. 
+    End the description text with the coordinates to the starting point.
+    GoogleMapsIframe is to be populated with the share embed html for the starting point and put a pin on it. 
     `,
 });
 
@@ -74,7 +79,7 @@ app.post('/api/profileaction', async (req, res) => {
                 console.log('Template Path:', templatePath);
 
                 // Render the EJS template with dynamic data
-                ejs.renderFile(templatePath, { data: cleanJson, email: email }, (err, html) => {
+                ejs.renderFile(templatePath, { data: cleanJson, email: email, iframe: cleanJson.GoogleMapsIframe.replaceAll(/\\/g, '') }, (err, html) => {
                     if (err) {
                         console.error('Error rendering EJS template:', err);
                         res.status(500).send('Internal Server Error');
