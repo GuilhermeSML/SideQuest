@@ -46,7 +46,7 @@ const model = genAI.getGenerativeModel({
     systemInstruction: `
     Return only a JSON that follows the schema ${jsonStructure}.
     You are a task giver.
-    Generate an unique task based in given interests, locations and dificulty.
+    Generate a random task based in given interests, locations and dificulty.
     Ground your tasks in reality and be specific.
     End the description text with the coordinates to the starting point.
     GoogleMapsIframe is to be populated with the share embed html for the starting point. 
@@ -70,9 +70,9 @@ app.post('/api/profileaction', async (req, res) => {
                 const prompt = `Interests: ${interests}, Locations: ${location}, Difficulty: ${difficulty}`;
 
                 const inputText = await model.generateContent(prompt);
-                console.log(inputText.response.text());
+                //console.log(inputText.response.text());
                 const cleanJson = JSON.parse(inputText.response.text().replaceAll("```", "").replace("json", ""));
-                console.log(JSON.stringify(cleanJson));
+                //console.log(JSON.stringify(cleanJson));
 
                 // Path to the EJS template
                 const templatePath = path.join(__dirname, '..', 'views', 'sidequest.ejs');
