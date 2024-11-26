@@ -61,7 +61,7 @@ app.post('/api/profileaction', async (req, res) => {
     if (!req.body) {
         return res.status(400).send('Request body is missing');
     }
-    const { name, email, interests, location, action } = req.body;
+    const { name, email, interests, location, action, difficulty } = req.body;
 
     // MongoDB Client
     const client = new MongoClient(uri);
@@ -71,7 +71,7 @@ app.post('/api/profileaction', async (req, res) => {
             try {
 
                 // Set up question and answer
-                const prompt = `Interests: ${interests}, Locations: ${location}, Difficulty: High`;
+                const prompt = `Interests: ${interests}, Locations: ${location}, Difficulty: ${difficulty}`;
 
                 const inputText = await model.generateContent(prompt);
                 console.log(inputText.response.text());
