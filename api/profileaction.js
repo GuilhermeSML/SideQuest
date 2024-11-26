@@ -29,9 +29,6 @@ const jsonStructure = `{
     "Description": {
       "type": "string"
     }
-    "Dificulty": {
-      "type": "string"
-    }
     "GoogleMapsIframe": {
       "type": "string"
     }
@@ -40,7 +37,6 @@ const jsonStructure = `{
     "Interests",
     "Name",
     "Description",
-    "Dificulty",
     "GoogleMapsIframe"
   ]
 }`

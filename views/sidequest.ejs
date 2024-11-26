@@ -5,70 +5,74 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Side Quest</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Optimized TailwindCSS -->
+    <style>
+        @import url('https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css');
+        /* Inline critical styles (if needed) */
+        body { font-family: 'Inter', sans-serif; }
+        .container { max-width: 640px; }
+    </style>
 </head>
 
 <body class="bg-gray-100">
-    <div class="bg-white p-8 rounded-lg shadow-lg max-w-2xl mx-auto my-12">
-        <!-- Title Section -->
-        <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Do You Accept the Side Quest?</h2>
+
+    <!-- Main Content -->
+    <div class="container bg-white p-6 rounded-lg shadow-md mx-auto my-10">
+        <!-- Title -->
+        <h2 class="text-2xl font-semibold text-center text-gray-800 mb-6">
+            Do You Accept the Side Quest?
+        </h2>
 
         <% if (data) { %>
-            <!-- Quest Details -->
-            <div class="bg-gray-50 p-6 rounded-md shadow mb-6">
-                <h3 class="text-xl font-semibold text-gray-700 mb-2">
-                    <%= data.Interests %>
-                </h3>
-                <h4 class="text-lg font-medium text-blue-600">
-                    <%= data.Name %>
-                </h4>
-                <p class="text-gray-600 mt-2">
-                    <%= data.Description %>
-                </p>
-            </div>
-            <div>
-                <%- iframe %>
-            </div>
+        <!-- Quest Details -->
+        <div class="bg-gray-50 p-4 rounded-md mb-4">
+            <h3 class="text-lg font-medium text-gray-700">
+                <%= data.Interests %>
+            </h3>
+            <h4 class="text-base font-medium text-blue-600">
+                <%= data.Name %>
+            </h4>
+            <p class="text-sm text-gray-600 mt-2">
+                <%= data.Description %>
+            </p>
+        </div>
+        <div>
+            <%- iframe %>
+        </div>
         <% } else { %>
-            <!-- No Quest Available -->
-            <div class="bg-yellow-100 p-6 rounded-md shadow text-yellow-700 text-center mb-6">
-                <p>No activity available at the moment. Check back later!</p>
-            </div>
+        <!-- No Activity -->
+        <div class="bg-yellow-100 p-4 rounded-md text-yellow-700 text-center">
+            No activity available at the moment. Check back later!
+        </div>
         <% } %>
 
-        <!-- Action Buttons Section -->
-        <form action="/api/acceptquest" method="POST" class="space-y-4">
-            <% if (data) { %>
-                <input type="hidden" name="email" value="<%= email %>">
-                <input type="hidden" name="name" value="<%= data.Name %>">
-                <input type="hidden" name="description" value="<%= data.Description %>">
+        <!-- Form Section -->
+        <% if (data) { %>
+        <form action="/api/acceptquest" method="POST" class="mt-4">
+            <input type="hidden" name="email" value="<%= email %>">
+            <input type="hidden" name="name" value="<%= data.Name %>">
+            <input type="hidden" name="description" value="<%= data.Description %>">
 
-                <!-- Accept Button -->
-                <button 
-                    type="submit" 
-                    name="action" 
-                    class="w-full bg-green-500 text-white py-2 px-4 rounded-md shadow hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">
-                    Accept
-                </button>
-            <% } %>
+            <button type="submit" name="action"
+                class="w-full bg-green-500 text-white py-2 rounded-md shadow hover:bg-green-600 focus:outline-none">
+                Accept
+            </button>
         </form>
+        <% } %>
 
-        <!-- Navigation Buttons -->
+        <!-- Navigation -->
         <div class="flex justify-between items-center mt-6">
-            <!-- Back Button -->
             <a href="../"
-                class="bg-blue-500 text-white py-2 px-4 rounded-md shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                class="bg-blue-500 text-white py-2 px-4 rounded-md shadow hover:bg-blue-600 focus:outline-none">
                 Back
             </a>
-
-            <!-- Refresh Button -->
-            <button 
-                onclick="location.reload()" 
-                class="bg-gray-500 text-white py-2 px-4 rounded-md shadow hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500">
+            <button onclick="location.reload()"
+                class="bg-gray-500 text-white py-2 px-4 rounded-md shadow hover:bg-gray-600 focus:outline-none">
                 Refresh
             </button>
         </div>
     </div>
+
 </body>
 
 </html>
